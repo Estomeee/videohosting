@@ -10,14 +10,3 @@ router = APIRouter(
 def uu():
     return 'result'
 
-@router.get('/')
-def uu():
-    return 'result'
-
-@router.get('/')
-def uu():
-    return 'result'
-
-@router.get('/')
-def uu():
-    return 'result'
