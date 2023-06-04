@@ -17,7 +17,7 @@ router = APIRouter(
 )
 
 
-@router.get("/protected-route")
+@router.post("/protected-route/load")
 def load_video(user: User = Depends(current_active_user)):
     return f"Типа залили видео"
 
