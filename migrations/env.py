@@ -10,6 +10,8 @@ from src.main import metadata
 
 from src.user.model import metadata as user_metadata
 from src.user.authorization.model import metadata as auth_user_metadata
+from src.video.model import metadata as metadata_video
+from src.interactions.model import metadata as metadata_interact
 
 
 # this is the Alembic Config object, which provides
@@ -33,7 +35,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = [user_metadata, auth_user_metadata]
+target_metadata = [user_metadata, auth_user_metadata, metadata_video, metadata_interact]
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
