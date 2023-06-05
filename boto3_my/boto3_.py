@@ -13,4 +13,8 @@ s3 = session.client(
 )
 
 #s3.put_object(Bucket='urfube-emegor', Key='object_name', Body='TEST', StorageClass='COLD')
-s3.upload_file('_DSC1067.JPG', 'urfube-emegor', '_DSC1067.JPG')
+#s3.upload_file('_DSC1067.JPG', 'urfube-emegor', '_DSC1067.JPG')
+
+
+def upload_chunk(s3client, key: str, chunk, part_number: str):
+    pass
