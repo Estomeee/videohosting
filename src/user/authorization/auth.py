@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.orm import sessionmaker
 from .model import User
-
+from src.entrypoint_db import get_async_session
 from config import SECRET as secret
 from src.entrypoint_db import async_session_maker
 
@@ -28,9 +28,6 @@ auth_backend = AuthenticationBackend(
 )
 
 
-async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session_maker() as session:
-        yield session
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
