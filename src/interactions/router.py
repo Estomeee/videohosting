@@ -1,4 +1,5 @@
 from datetime import datetime
+from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -71,7 +72,7 @@ async def add_comment(text: str,
         raise HTTPException(status_code=500, detail="Что-то не так с тектом(Допилить проверку текста)")
     ######
 
-    query = insert(comment_table).values(text=text, id_video=id_video, id_auther=user.id, published_at=datetime.utcnow())
+    query = insert(comment_table).values(id=str(uuid4()), text=text, id_video=id_video, id_auther=user.id, published_at=datetime.utcnow())
     await db_session.execute(query)
 
     await db_session.commit()

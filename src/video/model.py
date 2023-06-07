@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, DateTime, func
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, DateTime, func, BigInteger
 from src.user.authorization.model import User
 
 metadata = MetaData()
@@ -8,7 +8,7 @@ metadata = MetaData()
 video = Table(
     "video",
     metadata,
-    Column("id", Integer, primary_key=True),
+    Column("id", String(length=40), primary_key=True),
     Column("title", String(60)),
     Column("description", String),
     Column("count_likes", Integer, default=0),

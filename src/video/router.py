@@ -1,4 +1,7 @@
-from fastapi import APIRouter, Request, Depends, UploadFile, HTTPException
+from datetime import datetime
+from uuid import uuid4, uuid3
+
+from fastapi import APIRouter, Request, Depends, UploadFile, HTTPException, File, UploadFile
 from fastapi_users import FastAPIUsers
 
 from sqlalchemy import select, inspect, join, delete, values, insert
@@ -16,11 +19,14 @@ from src.interactions.model import like as like_table
 from src.interactions.model import view as view_table
 from src.interactions.utils import add_view
 from src.video.utils import check_video
+from typing import List
 
 from boto3_my.boto3_ import s3 as s3client
 import boto3
 
 MAX_COUNT_GET_ROWS = 100
+BUCKET = 'urfube-emegor'
+PART_SIZE = 1024 * 1024 * 5
 
 
 router = APIRouter(
@@ -30,70 +36,58 @@ router = APIRouter(
 
 
 @router.post("/protected-route/load")
-async def load_video(request: Request):
+async def load_video(title: str,
+                     description: str,
+                     files: List[UploadFile] = File(...),
+                     user: User = Depends(current_active_user),
+                     db_session: AsyncSession = Depends(get_async_session)):
 
-    key = 'new3'
+    if len(files) == 0 or len(files) > 2:
+        raise HTTPException(status_code=500, detail="Не верное количесвто файлов")
 
-    # Открыл поток для записи файла
-    multipart_upload = s3client.create_multipart_upload(
-        Bucket='urfube-emegor', Key=key)
+    key = str(uuid4())
+    key_video = f'video&{user.id}${title}${key}'
+    key_poster = f'image&{user.id}${title}${key}'
 
-    bb = []
-    parts = []
-    part_number = 1
-    async for data in request.stream():
+    video_link = f'https://storage.yandexcloud.net/{BUCKET}/{key_video}'
+    poster_link = f'https://storage.yandexcloud.net/{BUCKET}/_DSC1067.JPG'
 
-        if part_number == 0:
-            part_number += 1
-            continue
-
-        bb.append(data)
-        data = b''.join(bb)
-        bb = []
-        if len(data) < 6000000:
-            bb.append(data)
-            continue
+    id_video = str(uuid4())
 
 
-        upload_part_response = s3client.upload_part(Body=data,
-                                                    Bucket="urfube-emegor",
-                                                    UploadId=multipart_upload['UploadId'],
-                                                    PartNumber=part_number,
-                                                    Key=key)
-
-        parts.append({
-            'PartNumber': part_number,
-            'ETag': upload_part_response['ETag']
-        })
-        print(parts[part_number-1])
-        print(len(data))
-        #print(chunk)
-
-        part_number += 1
-
-    if len(bb) > 0:
-        data = b''.join(bb)
-        bb = []
-
-        upload_part_response = s3client.upload_part(Body=data,
-                                                    Bucket="urfube-emegor",
-                                                    UploadId=multipart_upload['UploadId'],
-                                                    PartNumber=part_number,
-                                                    Key=key)
-
-        parts.append({
-            'PartNumber': part_number,
-            'ETag': upload_part_response['ETag']
-        })
+    if len(files) == 2:
+        poster_link = f'https://storage.yandexcloud.net/{BUCKET}/{key_poster}'
 
 
-    # Закрываем поток
-    completeResult = s3client.complete_multipart_upload(
-        Bucket='urfube-emegor',
-        Key=key,
-        MultipartUpload={'Parts': parts},
-        UploadId=multipart_upload['UploadId']
-    )
+
+    query_insert = insert(video_table).values(id=id_video,
+                                              title=title,
+                                              description=description,
+                                              id_auther=user.id,
+                                              count_likes=0,
+                                              count_comments=0,
+                                              video_link=video_link,
+                                              poster_link=poster_link,
+                                              published_at=datetime.utcnow())
+
+    # key = id/title/datetime/
+
+    await db_session.execute(query_insert)
+    try:
+        if len(files) == 2:
+            await upload_file(files[1], key_poster, BUCKET)
+
+        await upload_file(files[0], key_video, BUCKET)
+    except Exception:
+
+        query = delete(video_table).where(video_table.c.id == id_video)
+        await db_session.execute(query)
+        print('Action: remove')
+        await db_session.commit()
+        return {'message': 'Не успешно'}
+
+    await db_session.commit()
+    return 'Видео успешно загружено'
 
 '''
 @router.post("/protected-route/load")
@@ -139,6 +133,45 @@ async def load_video(request: Request,
         UploadId=multipart_upload['UploadId']
     )
 '''
+
+
+async def upload_file(file, key: str, bucket: str):
+    # Открыл поток для записи файла
+    multipart_upload = s3client.create_multipart_upload(
+        Bucket=BUCKET, Key=key)
+
+    part_number = 1
+    parts = []
+
+    try:
+        while data := file.file.read(PART_SIZE):
+            upload_part_response = s3client.upload_part(Body=data,
+                                                        Bucket=BUCKET,
+                                                        UploadId=multipart_upload['UploadId'],
+                                                        PartNumber=part_number,
+                                                        Key=key)
+
+            parts.append({
+                'PartNumber': part_number,
+                'ETag': upload_part_response['ETag']
+            })
+            print(parts[part_number - 1])
+            print(len(data))
+
+            part_number += 1
+
+    except Exception:
+        return {"message": "There was an error uploading the file(s)"}
+    finally:
+        pass
+
+    # Закрываем поток
+    completeResult = s3client.complete_multipart_upload(
+        Bucket=BUCKET,
+        Key=key,
+        MultipartUpload={'Parts': parts},
+        UploadId=multipart_upload['UploadId']
+    )
 
 
 @router.get("/protected-route")
