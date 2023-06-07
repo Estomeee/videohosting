@@ -5,7 +5,7 @@ from sqlalchemy import select, inspect, join, delete, values, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .model import User
-from src.video.model import video as video_table
+#from src.video.model import video as video_table
 from src.video.schemas import Video as video_class
 
 from src.entrypoint_db import get_async_session

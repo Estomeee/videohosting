@@ -12,7 +12,7 @@ video = Table(
     Column("title", String(60)),
     Column("description", String),
     Column("count_likes", Integer),
-    Column("id_auther", Integer, ForeignKey(User.id), nullable=False),
+    Column("id_auther", Integer, ForeignKey(User.id, ondelete='CASCADE'), nullable=False),
     Column('video_link', String, nullable=False),
     Column('poster_link', String, nullable=False),
     Column('published_at', DateTime(timezone=True), server_default=func.now(), nullable=False)

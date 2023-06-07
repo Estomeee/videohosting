@@ -4,7 +4,7 @@ from src.entrypoint_db import get_async_session
 from src.user.authorization.model import User, AsyncSession
 from fastapi import Depends, HTTPException
 from src.user.authorization.current_user import current_active_user
-#from sqlalchemy import insert
+
 from sqlalchemy.dialects.postgresql import insert
 from src.interactions.model import view as view_table
 from src.interactions.schemas import View
