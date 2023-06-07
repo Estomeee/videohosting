@@ -5,16 +5,17 @@ from sqlalchemy import select, inspect, join, delete, values, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .model import User
-#from src.video.model import video as video_table
+from src.video.model import video as video_table
 from src.video.schemas import Video as video_class
 
 from src.entrypoint_db import get_async_session
-from src.user.authorization.current_user import current_active_user, current__user
+from src.user.authorization.current_user import current_active_user, current_user
 from src.user.authorization.current_user import fastapi_users
 from src.user.authorization.router import get_user
 from src.interactions.model import like as like_table
 from src.interactions.model import view as view_table
 from src.interactions.utils import add_view
+from src.video.utils import check_video
 
 from boto3_my.boto3_ import s3 as s3client
 import boto3
@@ -156,7 +157,7 @@ async def delete_video(user: User = Depends(current_active_user)):
 
 @router.get("/get_video")
 async def get_video(id_video: int,
-                    user=Depends(current__user),
+                    user=Depends(current_user),
                     db_session: AsyncSession = Depends(get_async_session)):
     query = select(video_table).where(video_table.c.id == id_video)
 

@@ -6,6 +6,7 @@ from fastapi import Depends, HTTPException
 from src.user.authorization.current_user import current_active_user
 
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy import select
 from src.interactions.model import view as view_table
 from src.interactions.schemas import View
 
@@ -21,3 +22,11 @@ async def add_view(id_video: int,
     print(user.id)
     await db_session.commit()
 
+async def check_view(id_video: int,
+                     user: User = Depends(current_active_user),
+                     db_session: AsyncSession = Depends(get_async_session)):
+
+    query = select(view_table).where(view_table.c.id_video == id_video, view_table.c.id_user == user.id)
+    view = await db_session.execute(query)
+
+    return view.one_or_none() is not None

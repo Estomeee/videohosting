@@ -16,6 +16,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     id = Column("id", Integer, primary_key=True)
     name = Column("name", String(30))
     nickname = Column("fullname", String)
+    count_subs = Column("count_subs", Integer, default=0)
     created_at = Column('created_at', DateTime(timezone=True), server_default=func.now(), nullable=False)
     '''
     email: Mapped[str] = mapped_column(String(length=320), unique=True, index=True, nullable=False)

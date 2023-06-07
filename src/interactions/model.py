@@ -42,4 +42,5 @@ sub = Table(
     metadata,
     Column("id_maker", Integer, ForeignKey(User.id, ondelete='CASCADE'), nullable=False, primary_key=True),
     Column("id_subscriber", Integer, ForeignKey(User.id, ondelete='CASCADE'), nullable=False, primary_key=True),
+    Column('datatime', DateTime(timezone=True), server_default=func.now(), nullable=False)
 )
