@@ -29,7 +29,7 @@ router = APIRouter(
 # Адреса поменять добавить по необходимости
 
 @router.get("/protected-route/like")
-async def like(id_video: int,
+async def like(id_video: str,
                user: User = Depends(current_active_user),
                db_session: AsyncSession = Depends(get_async_session)):
 
@@ -59,7 +59,7 @@ async def like(id_video: int,
 
 @router.post("/protected-route/comment/add")
 async def add_comment(text: str,
-                      id_video: int,
+                      id_video: str,
                       user: User = Depends(current_active_user),
                       db_session: AsyncSession = Depends(get_async_session)):
 
@@ -80,7 +80,7 @@ async def add_comment(text: str,
 
 
 @router.get("/protected-route/comment/remove")
-async def remove_comment(id_comment: int,
+async def remove_comment(id_comment: str,
                          user: User = Depends(current_active_user),
                          db_session: AsyncSession = Depends(get_async_session)):
 
@@ -88,7 +88,7 @@ async def remove_comment(id_comment: int,
     comment = await db_session.execute(query)
     comment = comment.one_or_none()
     if comment is None:
-        raise HTTPException(status_code=500, detail="Вы не можете этого сделать(Комментарий не существует или у вас нет прав)")
+        raise HTTPException(status_code=404, detail="Вы не можете этого сделать(Комментарий не существует или у вас нет прав)")
 
     query = delete(comment_table).where(comment_table.c.id == id_comment, comment_table.c.id_auther == user.id)
     await db_session.execute(query)
@@ -105,7 +105,7 @@ async def remove_comment(id_comment: int,
 @router.get("/protected-route/comment/get_comments")
 async def get_comments(count: int,
                        offset: int,
-                       id_video: int,
+                       id_video: str,
                        db_session: AsyncSession = Depends(get_async_session)):
 
     if count > MAX_COUNT_GET_ROWS:

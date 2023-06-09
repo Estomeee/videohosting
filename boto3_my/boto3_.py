@@ -1,20 +1,22 @@
-import boto3
+from io import BytesIO
+from typing import Union
+from fastapi import UploadFile
+import aioboto3
 from config import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
-
-session = boto3.Session(
-    aws_access_key_id=AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-)
-
-s3 = session.client(
-    service_name='s3',
-    endpoint_url='https://storage.yandexcloud.net'
-)
-
-#s3.put_object(Bucket='urfube-emegor', Key='object_name', Body='TEST', StorageClass='COLD')
-#s3.upload_file('_DSC1067.JPG', 'urfube-emegor', '_DSC1067.JPG')
+BUCKET = 'urfube-emegor'
 
 
-def upload_chunk(s3client, key: str, chunk, part_number: str):
-    pass
+config = {
+            "service_name": 's3',
+            "endpoint_url": "https://storage.yandexcloud.net",
+            "aws_secret_access_key": AWS_SECRET_ACCESS_KEY,
+            "aws_access_key_id": AWS_ACCESS_KEY_ID
+        }
+
+
+async def upload_object(key: str, file: Union[UploadFile, bytes]):
+    if type(file) == bytes:
+        file = BytesIO(file)
+    async with aioboto3.Session().client(**config) as s3:
+        await s3.upload_fileobj(file, BUCKET, key)

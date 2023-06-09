@@ -11,7 +11,7 @@ from src.interactions.model import view as view_table
 from src.interactions.schemas import View
 
 
-async def add_view(id_video: int,
+async def add_view(id_video: str,
              user: User,
              db_session: AsyncSession = Depends(get_async_session)):
     query = insert(view_table).values(id_video=id_video, id_user=user.id, published_at=datetime.utcnow())
