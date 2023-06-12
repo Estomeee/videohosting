@@ -19,4 +19,4 @@ async def upload_object(key: str, file: Union[UploadFile, bytes]):
     if type(file) == bytes:
         file = BytesIO(file)
     async with aioboto3.Session().client(**config) as s3:
-        await s3.upload_fileobj(file, BUCKET, key)
+        await s3.upload_fileobj(file, BUCKET, key, ExtraArgs={'ACL': 'public-read'})

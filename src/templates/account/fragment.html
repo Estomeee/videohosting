@@ -1,0 +1,19 @@
+{% for e in videos%}
+    <li class="flex main-list_video-item">
+        <a href={{plv}}{{e.id}} class="flex">
+            <img src={{e.poster_link}} alt="" class="main-list_video-item-preview">
+            <div class="flex-column main-list_video-item-info">
+                <div>
+                    <p class="main-list_video-item-info-title">{{e.title}}</p>
+                    <p class="main-list_video-item-info-auther">{{e.nickname}}</p>
+                    <p class="main-list_video-item-info-descr">{{e.description}}
+                    </p>
+                </div>
+                <div class="flex main-list_video-item-info-block">
+                    <p class="block-views">Просмотры</p>
+                    <p class="block-date">{{e.published_at.strftime('%Y-%m-%d')}}</p>
+                </div>
+            </div>
+        </a>
+    </li>
+{% endfor %}

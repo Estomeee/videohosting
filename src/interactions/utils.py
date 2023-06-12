@@ -15,7 +15,7 @@ async def add_view(id_video: str,
              user: User,
              db_session: AsyncSession = Depends(get_async_session)):
     query = insert(view_table).values(id_video=id_video, id_user=user.id, published_at=datetime.utcnow())
-    await db_session.execute(query.on_conflict_do_nothing(index_elements=['id_video', 'id_user']))
+    await db_session.execute(query.on_conflict_do_update(index_elements=['id_video', 'id_user'], set_={'published_at':datetime.utcnow()}))
 
     #db_session.add(View(id_video=id_video, id_user=user.id, published_at=datetime.datetime.utcnow()))
     print('Есть попытка')

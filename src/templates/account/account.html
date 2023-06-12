@@ -1,0 +1,29 @@
+{% extends "user_base.html" %}
+
+{% block user_img %}
+    src={{user.link_img}}
+{% endblock %}
+
+{% block js %}
+        <script src="{{ url_for('static', path='js/account.js') }}"></script>
+{% endblock %}
+
+{% block actions %}
+    <div class="flex main-content-actions">
+        <ul class="flex main-content-actions-list">
+            <li class="main-content-actions-list-item">
+                <button id="my_video" class="acc-action active" onclick="action(0, id);">Мои видео</button>
+            </li>
+            <li class="main-content-actions-list-item">
+                <button id="history" class="acc-action" onclick="action(1, id);">История</button>
+            </li>
+            <li class="main-content-actions-list-item">
+                <button id="liked" class="acc-action" onclick="action(2, id);">Любимые</button>
+            </li>
+            <li class="main-content-actions-list-item">
+                <button id="subs" class="acc-action" onclick="action(3, id);">Подписки</button>
+            </li>
+        </ul>
+        <button class="main-content-actions-add_bth">Новое видео</button>
+    </div>
+{% endblock %}

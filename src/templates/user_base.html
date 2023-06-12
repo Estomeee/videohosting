@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block user_img %}
+    src={{user.link_img}}
+{% endblock %}
+
+{% block style %}
+        <link rel="stylesheet" href="{{ url_for('static', path='styles/style_page_user.css')}}">
+{% endblock %}
+
+{% block js %}
+         <script src="{{ url_for('static', path='js/account.js')}}"></script>
+{% endblock %}
+
+{% block main %}
+    <main>
+        <div class="main-user_header_container">
+            <div class="flex main-user_header">
+                <div class="flex">
+                    <img src={{user.link_img}} alt="" class="maim-user_header-img">
+                    <div class="main-user_header-info">
+                        <p class="main-user_header-info-nickname">{{user.nickname}}</p>
+                        <p class="main-user_header-info-subs">56 подписчиков</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex-column main-content">
+            {% block actions%}
+            {% endblock %}
+            <div class="main-gr_container">
+                <ul class="main-list_video">
+
+                    {% for e in user_videos%}
+                    <li class="flex main-list_video-item">
+                        <a href={{plv}}{{e.id}} class="flex">
+                            <img src={{e.poster_link}} alt="" class="main-list_video-item-preview">
+                        <div class="flex-column main-list_video-item-info">
+                            <div>
+                                <p class="main-list_video-item-info-title">{{e.title}}</p>
+                                <p class="main-list_video-item-info-auther">{{e.nickname}}</p>
+                                <p class="main-list_video-item-info-descr">{{e.description}}
+                                </p>
+                            </div>
+                            <div class="flex main-list_video-item-info-block">
+                                <p class="block-views">Просмотры</p>
+                                <p class="block-date">{{e.published_at.strftime('%Y-%m-%d')}}</p>
+                            </div>
+
+                        </div>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% if user_videos|length >= await_count %}
+                    <button name="0" class="bth bth-more" onclick="more({{await_count}}, name);">Показать ещё</button>
+                {% endif %}
+            </div>
+        </div>
+
+
+
+    </main>
+{% endblock %}

@@ -13,7 +13,9 @@ video = Table(
     Column("description", String),
     Column("count_likes", Integer, default=0),
     Column("count_comments", Integer, default=0),
+    Column("count_views", Integer, server_default='0'),
     Column("id_auther", Integer, ForeignKey(User.id, ondelete='CASCADE'), nullable=False),
+    Column("nickname", String, server_default='defualt', nullable=False),
     Column('video_link', String, nullable=False),
     Column('poster_link', String, nullable=False),
     Column('published_at', DateTime(timezone=True), server_default=func.now(), nullable=False)

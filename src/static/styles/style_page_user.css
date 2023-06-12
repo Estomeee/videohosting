@@ -1,0 +1,119 @@
+.main-user_header_container{
+    padding: 60px 250px;
+
+    background-color: white;
+}
+
+.main-user_header {
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.maim-user_header-img {
+    width: 160px;
+    height: 160px;
+
+    margin-right: 60px;
+
+    object-fit: cover;
+
+    border-radius: 100px;
+}
+
+.main-user_header-info-nickname {
+    margin-bottom: 16px;
+
+    font-weight: 800;
+    font-size: 47px;
+}
+
+.main-content-actions{
+    position: sticky;
+    top: 60px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 250px;
+
+    background-color: white;
+}
+
+.main-content-actions-list-item{
+    padding: 25px 0;
+    margin-right: 25px;
+}
+
+.main-list_video-item{
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+.main-list_video-item a{
+    width: 100%;
+}
+
+.block-views{
+    margin-right: 20px;
+}
+
+.main-gr_container{
+    padding: 40px 250px;
+}
+
+.main-list_video-item-info{
+    justify-content: space-between;
+    width: 100%;
+
+    padding: 2px 0;
+}
+
+.main-list_video-item-info p{
+    max-width: 1000px;
+    max-height: 90px;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+
+.main-list_video-item-info-title{
+    margin-bottom: 15px;
+
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.main-list_video-item-info-auther{
+    margin-bottom: 5px;
+}
+
+.main-list_video-item-preview{
+    width: 100%;
+    max-width: 400px;
+    height: 200px;
+
+    margin-right: 20px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.other{
+    padding: 25px 0;
+}
+
+.acc-action{
+    font-weight: 600;
+    padding: 0;
+    color: #545454;
+    background-color: white;
+    border: none;
+}
+
+
+.acc-action:hover{
+    color: black;
+    cursor: pointer;
+
+}
+
+.active{
+    color: black;
+
+}

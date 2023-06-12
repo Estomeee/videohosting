@@ -25,23 +25,21 @@ router = APIRouter(
 )
 
 
-@router.get("/protected-route")
-def protected_route(user: User = Depends(current_active_user)):
-    return f"Hello, {user.email}"
-
-
 @router.get("/get_user")
 async def get_user(id: int, db_session: AsyncSession = Depends(get_async_session)):
-    query = select(user_table) \
-        .where(user_table.id == id)
+    query = select(user_table).where(user_table.id == id)
 
     user = await db_session.execute(query)
     user = user.one_or_none()
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
 
-    return user._asdict()
+    return user._asdict()['User']
 
+
+@router.get("/protected-route")
+def protected_route(user: User = Depends(current_active_user)):
+    return f"Hello, {user.email}"
 
 @router.get("/protected-route/get_subscriptions")
 async def get_subscriptions(count: int,

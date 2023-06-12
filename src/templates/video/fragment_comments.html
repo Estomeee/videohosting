@@ -1,0 +1,6 @@
+{% for c in comments %}
+  <li class="main-comments-list_comm-item">
+      <a href="{{plu}}{{c.id_auther}}" class="comm_auther">{{c.id_auther}}</a>
+      <p class="comm_text">{{c.text}}</p>
+  </li>
+{% endfor %}

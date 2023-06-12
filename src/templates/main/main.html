@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block user_img %}
+    src={{link_user_img}}
+{% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', path='styles/style_page_main.css')}}">
+{% endblock %}
+
+{% block js %}
+         <script src="{{ url_for('static', path='js/main.js')}}"></script>
+{% endblock %}
+
+{% block main %}
+    <main style="padding: 180px 250px;">
+        <div class="main-logo-h1">
+            Видеохостинг имени первого
+        </div>
+        <ul class="ul main-list_video">
+            {% for e in videos%}
+            <li class="main-list_video-item">
+
+                <a href="{{links['part_link_video']}}{{e.id}}" id="e.id" >
+                    <img src={{e.poster_link}} alt="" class="main-list_video-item-preview">
+                <div class="main-list_video-item-info">
+                    <p class="main-list_video-item-info-title">{{e.title}}</p>
+                    <p class="main-list_video-item-info-descr">{{e.nickname}}</p>
+                    <div class="flex main-list_video-item-info-down_cont">
+                        <p class="main-list_video-item-info-view">56 просмотров</p>
+                        <p class="main-list_video-item-info-date">{{e.published_at.strftime('%Y-%m-%d')}}</p>
+                    </div>
+                </div>
+                </a>
+            </li>
+            {% endfor %}
+
+        </ul>
+
+        {% if videos|length == await_count %}
+            <button name="0" class="bth bth-more" onclick="get_more();">Показать ещё</button>
+        {% endif %}
+    </main>
+{% endblock %}

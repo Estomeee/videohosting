@@ -1,0 +1,16 @@
+{% extends "user_base.html "%}
+
+{% block js %}
+         <script src="{{ url_for('static', path='js/user.js')}}"></script>
+{% endblock %}
+
+{% block actions %}
+    <div class="flex main-content-actions">
+        <ul class="flex main-content-actions-list">
+            <li class="main-content-actions-list-item">
+                <button id="my_video" class="acc-action active" onclick="alerted(0, id);">Видео пользователя: {{user.nickname}}</button>
+            </li>
+        </ul>
+        <button class="main-content-actions-add_bth">Подписаться</button>
+    </div>
+{% endblock %}

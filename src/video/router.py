@@ -133,9 +133,9 @@ async def load_video(title: str,
         raise HTTPException(status_code=512, detail=Exception)
 
     try:
-        await add_video_db(key, 2, title,
+        await add_video_db(key, 7, title,
                            description,
-                           video_link, image_link, db_session)
+                           video_link, image_link, 'Исправь загрузку(2)(7)',db_session)
     except Exception:
         await video_file.uploader.remove_object()
         raise Exception
@@ -149,6 +149,7 @@ async def add_video_db(id_video: str,
                        description: str,
                        video_link: str,
                        poster_link: str,
+                       nickname: str,
                        db_session: AsyncSession = Depends(get_async_session)):
 
     print([title, description])
@@ -160,7 +161,8 @@ async def add_video_db(id_video: str,
                                               count_comments=0,
                                               video_link=video_link,
                                               poster_link=poster_link,
-                                              published_at=datetime.utcnow())
+                                              published_at=datetime.utcnow(),
+                                              nickname=nickname)
 
     await db_session.execute(query_insert)
     await db_session.commit()
@@ -339,6 +341,7 @@ async def get_video(id_video: str,
     if video is None:
         raise HTTPException(status_code=404, detail="Video not found")
 
+
     if user is not None:
         await add_view(id_video, user, db_session)
 
@@ -362,7 +365,6 @@ async def get_last_videos(count: int, offset: int, db_session: AsyncSession = De
 @router.get("/get_video_this_user")
 async def get_videos_this_user(id_user: int, count: int, offset: int,
                                db_session: AsyncSession = Depends(get_async_session)):
-    await get_user(id_user, db_session)
 
     if count > MAX_COUNT_GET_ROWS:
         raise HTTPException(status_code=500, detail="У вас большие запросы, попробуйте использовать меньшее значение")
@@ -389,7 +391,7 @@ async def get_viewed_videos(count: int, offset: int,
     query = select(video_table) \
         .join(view_table) \
         .where(view_table.c.id_user == user.id) \
-        .order_by(desc(like_table.c.published_at)) \
+        .order_by(desc(view_table.c.published_at)) \
         .offset(offset) \
         .limit(count)
 

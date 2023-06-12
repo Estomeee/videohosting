@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy import select, delete, update
+from sqlalchemy import select, delete, update, desc
 
 from fastapi_users import FastAPIUsers
 
@@ -115,7 +115,7 @@ async def get_comments(count: int,
     if not await check_video(id_video, db_session):
         raise HTTPException(status_code=404, detail="Video not found")
 
-    query = select(comment_table).where(comment_table.c.id_video == id_video).order_by(comment_table.c.published_at).offset(offset).limit(count)
+    query = select(comment_table).where(comment_table.c.id_video == id_video).order_by(desc(comment_table.c.published_at)).offset(offset).limit(count)
     comments = [row._asdict() for row in await db_session.execute(query)]
 
     return comments

@@ -1,0 +1,62 @@
+{% extends "base.html "%}
+
+{% block user_img %}
+    src={{link_img}}
+{% endblock %}
+
+{% block style %}
+        <link rel="stylesheet" href="{{ url_for('static', path='styles/style_page_video.css')}}">
+{% endblock %}
+
+{% block js %}
+         <script src="{{ url_for('static', path='js/video.js')}}"></script>
+{% endblock %}
+
+{% block main %}
+    <main style="padding: 60px 250px;">
+        <div class="flex main-video">
+            <video controls width="250" class="main-video-player">
+                <source src={{video.video_link}}
+                type="video/mp4">
+            </video>
+        </div>
+        <div class="main-info">
+            <p class="main-info-title">{{video.title}}</p>
+            <div class="flex row_info">
+                <div class="flex row_info2">
+                    <img src={{user.link_img}} alt="" class="main-info-img_auther">
+                    <a href="{{plu}}{{video.id_auther}}" style="margin-right: 15px; font-weight: 800; font-size: 18px;">{{user.nickname}}</a>
+                    <button class="bth-sub">Подписаться</button>
+                </div>
+                <div class="flex">
+                    <p>{{video.count_likes}}</p>
+                    <button class="bth-like">лайк</button>
+                </div>
+            </div>
+            <p class="main-info-descr">{{video.description}}</p>
+        </div>
+        <div class="main-comments">
+            <p class="main-comments-p">Комментарии</p>
+            {% if something != None %}
+            <form action="" class="flex-column">
+                <textarea class="comment-input" name="comment" cols="40" rows="5" ></textarea>
+                <button class="bth-add_comm">Отправить</button>
+            </form>
+            {% else %}
+                <p>Авторизуйтесь, чтобы оставить комментарий</p>
+            {% endif %}
+
+            <ul class="main-comments-list_comm">
+                {% for c in comments %}
+                <li class="main-comments-list_comm-item">
+                    <a href="{{plu}}{{c.id_auther}}" class="comm_auther">{{c.id_auther}}</a>
+                    <p class="comm_text">{{c.text}}</p>
+                </li>
+                {% endfor %}
+            </ul>
+                {% if comments|length > 0 %}
+                <button name="0" class="bth bth-more" onclick="more();">Показать ещё</button>
+                {% endif %}
+        </div>
+    </main>
+{% endblock %}
