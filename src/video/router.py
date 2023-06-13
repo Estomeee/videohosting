@@ -29,7 +29,7 @@ from starlette.concurrency import run_in_threadpool
 from src.video.streaming import VideoTarget
 from starlette.requests import ClientDisconnect
 import streaming_form_data
-from boto3_my.boto3_ import upload_object
+from boto3_my.boto3_ import upload_object, remove_object
 from boto3_my.boto3_ import BUCKET
 
 
@@ -133,6 +133,7 @@ async def load_video(title: str,
         raise HTTPException(status_code=512, detail=Exception)
 
     try:
+        # Доделать загрузку видео
         await add_video_db(key, 7, title,
                            description,
                            video_link, image_link, 'Исправь загрузку(2)(7)',db_session)
@@ -303,7 +304,7 @@ async def load_video(request: Request,
 '''
 
 
-@router.get("/protected-route")
+@router.get("/protected-route/delete_video")
 async def delete_video(id_video: str,
                        user: User = Depends(current_active_user),
                        db_session: AsyncSession = Depends(get_async_session)):
@@ -315,9 +316,15 @@ async def delete_video(id_video: str,
         raise HTTPException(status_code=500,
                             detail="Вы не можете этого сделать(Видео не существует или у вас нет прав)")
 
+    video = video._asdict()
+
+    key_video = video['video_link'].split('/')[-1]
+    key_img = video['poster_link'].split('/')[-1]
+
     try:
-        video_file = VideoTarget(BUCKET, f'{PREFIX_VIDEO}{id_video}')
-        res = await video_file.uploader.remove_object()
+        res = await remove_object(key_video)
+        print(res)
+        res = await remove_object(key_img)
         print(res)
     except Exception:
         raise Exception
@@ -340,7 +347,6 @@ async def get_video(id_video: str,
     video = video.one_or_none()
     if video is None:
         raise HTTPException(status_code=404, detail="Video not found")
-
 
     if user is not None:
         await add_view(id_video, user, db_session)

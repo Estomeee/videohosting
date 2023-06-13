@@ -20,7 +20,10 @@
                     <img src={{user.link_img}} alt="" class="maim-user_header-img">
                     <div class="main-user_header-info">
                         <p class="main-user_header-info-nickname">{{user.nickname}}</p>
-                        <p class="main-user_header-info-subs">56 подписчиков</p>
+                        <div class="flex">
+                            <p style="margin-right: 5px;">Подписчиков: </p>
+                            <p id="count_subs" class="main-user_header-info-subs"> {{user.count_subs}}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -34,7 +37,7 @@
                 <ul class="main-list_video">
 
                     {% for e in user_videos%}
-                    <li class="flex main-list_video-item">
+                    <li id="{{e.id}}" class="flex main-list_video-item">
                         <a href={{plv}}{{e.id}} class="flex">
                             <img src={{e.poster_link}} alt="" class="main-list_video-item-preview">
                         <div class="flex-column main-list_video-item-info">
@@ -45,18 +48,20 @@
                                 </p>
                             </div>
                             <div class="flex main-list_video-item-info-block">
-                                <p class="block-views">Просмотры</p>
+                                <p class="block-views">Просмотров: {{e.count_views}}</p>
                                 <p class="block-date">{{e.published_at.strftime('%Y-%m-%d')}}</p>
                             </div>
-
                         </div>
                         </a>
+                        {% if _bool %}
+                            <div>
+                                <button class="bth bth-remove-video" onclick="remove_video('{{e.id}}');">Удалить</button>
+                            </div>
+                        {% endif %}
                     </li>
                     {% endfor %}
                 </ul>
-                {% if user_videos|length >= await_count %}
                     <button name="0" class="bth bth-more" onclick="more({{await_count}}, name);">Показать ещё</button>
-                {% endif %}
             </div>
         </div>
 

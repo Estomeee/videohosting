@@ -1,5 +1,5 @@
 {% for e in videos%}
-    <li class="flex main-list_video-item">
+    <li id="{{e.id}}" class="flex main-list_video-item">
         <a href={{plv}}{{e.id}} class="flex">
             <img src={{e.poster_link}} alt="" class="main-list_video-item-preview">
             <div class="flex-column main-list_video-item-info">
@@ -10,10 +10,15 @@
                     </p>
                 </div>
                 <div class="flex main-list_video-item-info-block">
-                    <p class="block-views">Просмотры</p>
+                    <p class="block-views">Просмотров: {{e.count_views}}</p>
                     <p class="block-date">{{e.published_at.strftime('%Y-%m-%d')}}</p>
                 </div>
             </div>
         </a>
+        {% if _bool %}
+            <div>
+                <button class="bth bth-remove-video" onclick="remove_video('{{e.id}}');">Удалить</button>
+            </div>
+        {% endif %}
     </li>
 {% endfor %}

@@ -55,7 +55,11 @@ ul{
 }
 
 .bth{
-    background: none;
+    border-radius: 15px;
+    font-weight: 600;
+    padding: 6px 15px;
+    color: white;
+    background: black;
     border: none;
 }
 

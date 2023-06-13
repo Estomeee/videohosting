@@ -24,23 +24,36 @@
             <p class="main-info-title">{{video.title}}</p>
             <div class="flex row_info">
                 <div class="flex row_info2">
-                    <img src={{user.link_img}} alt="" class="main-info-img_auther">
-                    <a href="{{plu}}{{video.id_auther}}" style="margin-right: 15px; font-weight: 800; font-size: 18px;">{{user.nickname}}</a>
-                    <button class="bth-sub">Подписаться</button>
+                    <img src={{auther.link_img}} alt="" class="main-info-img_auther">
+                    <a href="{{plu}}{{video.id_auther}}" style="margin-right: 15px; font-weight: 800; font-size: 18px;">{{auther.nickname}}</a>
+                    {% if is_sub %}
+                    <button class="bth bth-unsub" onclick="unsubscribe({{auther.id}});">Отписаться</button>
+                    {% else %}
+                    <button class="bth bth-sub" onclick="subscribe({{auther.id}});">Подписаться</button>
+                    {% endif %}
+
                 </div>
-                <div class="flex">
-                    <p>{{video.count_likes}}</p>
-                    <button class="bth-like">лайк</button>
+                <div class="flex" style="align-items: center;">
+                    <p id="count_likes">{{video.count_likes}}</p>
+                    {% if is_liked %}
+                    <button class="bth bth-like bth-remove_like" onclick="remove_like('{{video.id}}');">Убрать лайк</button>
+                    {% else %}
+                    <button class="bth bth-like bth-put_like" onclick="put_like('{{video.id}}');">Поставить лайк</button>
+                    {% endif %}
                 </div>
+            </div>
+            <div class="flex">
+                <p style="margin-right: 60px;">Просмотров: {{video.count_views}}</p>
+                <p>{{video.published_at.strftime('%Y-%m-%d')}}</p>
             </div>
             <p class="main-info-descr">{{video.description}}</p>
         </div>
         <div class="main-comments">
             <p class="main-comments-p">Комментарии</p>
             {% if something != None %}
-            <form action="" class="flex-column">
+            <form method="post" action="http://127.0.0.1:8000/interactions/protected-route/comment/add" class="flex-column">
                 <textarea class="comment-input" name="comment" cols="40" rows="5" ></textarea>
-                <button class="bth-add_comm">Отправить</button>
+                <button class="bth h-add_comm" onclick="">Отправить</button>
             </form>
             {% else %}
                 <p>Авторизуйтесь, чтобы оставить комментарий</p>

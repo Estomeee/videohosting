@@ -17,7 +17,7 @@ from src.interactions.model import view as view_table
 from src.interactions.utils import add_view
 
 
-async def check_video(id_video: int,
+async def check_video(id_video: str,
                 db_session: AsyncSession = Depends(get_async_session)):
 
     query = select(video_table).where(video_table.c.id == id_video)

@@ -89,8 +89,3 @@ class Uploader:
                 Bucket=self.bucket,
                 Key=self.key,
                 UploadId=self.mpu['UploadId'])
-
-    async def remove_object(self):
-        async with aioboto3.Session().client(**self.config) as s3:
-            res = await s3.delete_object(Bucket=self.bucket, Key=self.key)
-            print(res)

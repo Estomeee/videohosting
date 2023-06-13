@@ -3,6 +3,33 @@ let urls = ['http://127.0.0.1:8000/page/account/my_video',
             'http://127.0.0.1:8000/page/account/history',
             'http://127.0.0.1:8000/page/account/liked_video']
 
+let url_remove_video = 'http://127.0.0.1:8000/video/protected-route/delete_video'
+
+function remove_video(id_video){
+
+    let xhr = new XMLHttpRequest();
+    let url = new URL(url_remove_video);
+    url.searchParams.set('id_video', id_video);
+    xhr.open("GET", url)
+
+    xhr.send()
+
+    xhr.onload = function() {
+        if (xhr.status != 200) {
+            alert(`Ошибка ${xhr.status}: ${xhr.statusText}`);
+        } else {
+
+            let li = document.getElementById(id_video);
+            li.remove()
+
+        }
+      };
+
+      xhr.onerror = function() {
+        alert("Попробуйте позже");
+      };
+}
+
 function action(num, id){
 
     let xhr = new XMLHttpRequest();

@@ -8,6 +8,7 @@ from src.video.router import get_last_videos, get_videos_this_user, get_viewed_v
 from src.user.authorization.current_user import current_user, current_active_user
 from src.interactions.router import get_comments
 from src.pages.utils import get_link_account_img
+from src.interactions.utils import check_like, check_sub
 
 router = APIRouter(
     prefix='/page',
@@ -40,6 +41,7 @@ async def get_main_page(request: Request,
                                                          'links': links,
                                                          "videos": videos,
                                                          "link_user_img": link_img,
+                                                         "user": user,
                                                          'await_count': await_count_main})
 
 
@@ -67,7 +69,8 @@ async def get_account_page(request: Request,
                                                                "user": user,
                                                                "user_videos": user_videos,
                                                                "await_count": await_count,
-                                                               'plv': links['part_link_video']})
+                                                               'plv': links['part_link_video'],
+                                                               "_bool": True})
 
 
 @router.get("/account/my_video")
@@ -80,7 +83,8 @@ async def get_account_fragment_my_video(request: Request,
 
     return templates.TemplateResponse("account/fragment.html", {"request": request,
                                                                 "videos": videos,
-                                                                'plv': links['part_link_video']})
+                                                                'plv': links['part_link_video'],
+                                                                '_bool': True})
 
 
 @router.get("/account/history")
@@ -99,7 +103,7 @@ async def get_account_fragment_history(request: Request,
 @router.get("/account/liked_video")
 async def get_account_fragment_liked(request: Request,
                                      offset: int,
-                                     user=Depends(current_user),
+                                     user=Depends(current_active_user),
                                      db_session: AsyncSession = Depends(get_async_session)):
 
     videos = await get_liked_videos_main(await_count, offset, user, db_session)
@@ -112,7 +116,14 @@ async def get_account_fragment_liked(request: Request,
 @router.get('/user')
 async def get_user_page(request: Request,
                         id_user: int,
+                        account=Depends(current_user),
                         db_session: AsyncSession = Depends(get_async_session)):
+
+    if account is not None:
+        if account.id == id_user:
+            return await get_account_page(request, account, db_session)
+        else:
+            is_sub = await check_sub(id_user, account, db_session)
 
     user = await get_user(id_user, db_session)
 
@@ -123,7 +134,8 @@ async def get_user_page(request: Request,
                                                             "user": user,
                                                             "user_videos": user_videos,
                                                             "await_count": await_count,
-                                                            'plv': links['part_link_video']})
+                                                            'plv': links['part_link_video'],
+                                                            'is_sub': is_sub})
 
 
 @router.get("/user/videos")
@@ -149,20 +161,24 @@ async def get_video_page(id_video: str,
 
     video = await get_video(id_video, account, db_session)
 
+    auther = await get_user(video['id_auther'], db_session)
 
-
-
-    user = await get_user(video['id_auther'], db_session)
+    is_liked = await check_like(id_video, account, db_session)
+    is_sub = await check_sub(video['id_auther'], account, db_session)
+    print(is_sub)
+    print(is_liked)
 
     comments = await get_comments(await_count, 0, id_video, db_session)
 
     return templates.TemplateResponse("video/video_page.html", {"request": request,
                                                                 'links': links,
                                                                 "video": video,
-                                                                "user": user,
+                                                                "auther": auther,
                                                                 "comments": comments,
                                                                 "link_img": link_img,
                                                                 "plu": links['part_link_user'],
+                                                                "is_liked": is_liked,
+                                                                "is_sub": is_sub,
                                                                 "something": account})
 
 

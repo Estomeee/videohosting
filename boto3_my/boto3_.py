@@ -20,3 +20,10 @@ async def upload_object(key: str, file: Union[UploadFile, bytes]):
         file = BytesIO(file)
     async with aioboto3.Session().client(**config) as s3:
         await s3.upload_fileobj(file, BUCKET, key, ExtraArgs={'ACL': 'public-read'})
+
+
+async def remove_object(key: str):
+    async with aioboto3.Session().client(**config) as s3:
+        res = await s3.delete_object(Bucket=BUCKET, Key=key)
+        print(res)
+

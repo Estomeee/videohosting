@@ -11,6 +11,10 @@
                 <button id="my_video" class="acc-action active" onclick="alerted(0, id);">Видео пользователя: {{user.nickname}}</button>
             </li>
         </ul>
-        <button class="main-content-actions-add_bth">Подписаться</button>
+        {% if is_sub %}
+        <button class="bth bth-unsub" onclick="unsubscribe({{user.id}});">Отписаться</button>
+        {% else %}
+        <button class="bth bth-sub" onclick="subscribe({{user.id}});">Подписаться</button>
+        {% endif %}
     </div>
 {% endblock %}
