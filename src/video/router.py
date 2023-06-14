@@ -58,9 +58,8 @@ class MaxBodySizeValidator:
 max_video_size = 1024*1024*512
 
 @router.post("/protected-route/load")
-async def load_video(title: str,
-                     description: str,
-                     request: Request,
+async def load_video(request: Request,
+                     user: User = Depends(current_active_user),
                      db_session: AsyncSession = Depends(get_async_session)):
 
     body_validator = MaxBodySizeValidator(MAX_REQUEST_BODY_SIZE)
@@ -78,6 +77,11 @@ async def load_video(title: str,
 
     video_file = VideoTarget(MaxSizeValidator(max_video_size), bucket=BUCKET, pre_key=key_video)
     image_file = ValueTarget()
+    title_value = ValueTarget()
+    descr_value = ValueTarget()
+
+    title = 'default'
+    description = 'default'
 
     if not filename:
         #raise HTTPException(status_code=422, detail='Filename header is missing')
@@ -90,6 +94,8 @@ async def load_video(title: str,
         print(request)
         parser.register('file', video_file)
         parser.register('image', image_file)
+        parser.register('title', title_value)
+        parser.register('description', descr_value)
 
         async for chunk in request.stream():
             body_validator(chunk)
@@ -100,6 +106,10 @@ async def load_video(title: str,
 
         video_link = f'https://storage.yandexcloud.net/{BUCKET}/{key_video}.{video_extension}'
         image = image_file.value
+        title = title_value.value.decode()
+        description = descr_value.value.decode()
+        print(title)
+        print(description)
 
         if len(image) != 0:
             preview_type, preview_extension = image_file.multipart_content_type.split('/')
@@ -126,7 +136,7 @@ async def load_video(title: str,
 
     try:
         # Доделать загрузку видео
-        await add_video_db(key, 7, title,
+        await add_video_db(key, user.id, title,
                            description,
                            video_link, image_link, 'Исправь загрузку(2)(7)',db_session)
     except Exception:

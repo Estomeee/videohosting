@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', path='styles/style_upload.css')}}">
+{% endblock %}
+
+{% block js %}
+         <script src="{{ url_for('static', path='js/upload.js')}}"></script>
+{% endblock %}
+
+{% block user_img %}
+    src={{link_img}}
+{% endblock %}
+
+{% block main %}
+<main style="padding: 60px 250px;">
+    <form id="form" class="flex-column main-form" method="post" enctype="multipart/form-data">
+        <label class="flex-column">Название: <input class="main-form-input_text" type="text" name="title" required placeholder="Придумайте название видео"></label>
+
+        <label class="flex-column">Описание: <textarea class="main-form-input_text" style="resize: none;" type="text" name="description" rows="5" cols="33" required placeholder="Придумайте описание"></textarea></label>
+        
+        <label class="flex-column">Видео: <input type="file" name="file" required></label>
+        <label class="flex-column">Превью: <input type="file" name="image" required></label>
+        <div>
+            <button type="submit" class="bth bth-uploud">Загрузить</button>
+        </div>
+    </form>
+</main>
+{% endblock %}

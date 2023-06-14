@@ -199,3 +199,28 @@ async def get_video_page_fragment_comments(request: Request,
                                                                        "comments": comments,
                                                                        "plu": links['part_link_user'],
                                                                        'account': account})
+
+
+@router.get("/upload_page")
+async def get_upload_page(request: Request,
+                          account=Depends(current_active_user),):
+    link_img = get_link_account_img(account)
+
+    return templates.TemplateResponse("upload/upload.html", {"request": request,
+                                                             'links': links,
+                                                             'account': account,
+                                                             "link_img": link_img})
+
+
+
+
+
+
+
+
+
+
+
+
+
+

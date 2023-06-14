@@ -66,3 +66,14 @@ ul{
 button {
     cursor: pointer;
 }
+
+main {
+    min-height: 100vh;
+}
+
+footer{
+    padding: 40px 250px;
+    justify-content: space-between;
+    color: white;
+    background-color: black;
+}

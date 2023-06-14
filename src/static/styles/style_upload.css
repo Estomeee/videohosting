@@ -1,0 +1,21 @@
+.main-form label{
+    font-weight: 800;
+    font-size: 20px;
+}
+
+input, textarea{
+    margin-top: 15px;
+    font-size: 18px;
+}
+
+label{
+    margin-bottom: 30px;
+}
+
+.main-form-input_text{
+    padding: 20px;
+
+    border-radius: 20px;
+    background-color: #bdbdd6;
+    border: none;
+}
