@@ -124,6 +124,10 @@ async def add_comment(id_video: str,
     query = insert(comment_table).values(id=str(uuid4()), text=text, id_video=id_video, id_auther=user.id, published_at=datetime.utcnow())
     await db_session.execute(query)
 
+    query_video = update(video_table).where(video_table.c.id == id_video).values(
+        count_comments=video_table.c.count_comments + 1)
+    await db_session.execute(query_video)
+
     await db_session.commit()
     return 'Комментарий успешно добавлен'
 
