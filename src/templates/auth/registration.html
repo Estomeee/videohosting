@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', path='styles/style_upload.css')}}">
+{% endblock %}
+
+{% block js %}
+         <script src="{{ url_for('static', path='js/registration.js')}}"></script>
+{% endblock %}
+
+{% block user_img %}
+    src={{link_img}}
+{% endblock %}
+
+{% block main %}
+<main style="padding: 60px 250px;">
+        <form id="form" class="flex-column main-form" method="post" enctype="application/x-www-form-urlencoded">
+            <label class="flex-column">email: <input class="main-form-input_text" type="text" name="email" required placeholder="Введите email"></label>
+
+            <label class="flex-column">Пароль: <input class="main-form-input_text" type="text" name="password" required placeholder="Придумайте пароль"></label>
+            <label class="flex-column">email: <input class="main-form-input_text" type="text" name="nickname" required placeholder="Придумайте nickname"></label>
+            <div>
+                <button type="submit" class="bth bth-login">Зарегистрироваться</button>
+            </div>
+        </form>
+    </main>
+{% endblock %}

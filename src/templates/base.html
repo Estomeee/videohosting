@@ -34,9 +34,13 @@
                 </svg>
             </button>
         </form>
+        {% if account == None %}
+        <form method="get" action="http://127.0.0.1:8000/page/auth/login"><button type="submit" class="bth main-content-actions-add_bth">Войти</button></form>
+        {% else %}
         <a href={{links['account']}} class="header-user_icon">
             <img {% block user_img %} {% endblock %} alt="Изображение пользователя">
         </a>
+        {% endif %}
     </header>
     {% block main %}
     {% endblock %}

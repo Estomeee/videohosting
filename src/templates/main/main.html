@@ -15,10 +15,10 @@
 {% block main %}
     <main style="padding: 180px 250px;">
         <div class="main-logo-h1">
-            {% if user == None %}
+            {% if account == None %}
             Привет, незнакомец!
             {% else %}
-            Привет, {{ user.nickname }}!
+            Привет, {{ account.nickname }}!
             {% endif %}
         </div>
         <ul class="ul main-list_video">

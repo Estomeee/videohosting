@@ -12,7 +12,7 @@ function add_comment(){
     textarea = document.getElementById('text_comment');
     text = textarea.value;
     id_video = document.location.href.split('=').slice(-1);
-    var data = JSON.stringify({ "text": text});
+    var data = JSON.stringify({"text": text});
 
     let xhr = new XMLHttpRequest();
     let url = new URL(url_add_com);

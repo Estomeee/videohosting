@@ -30,10 +30,10 @@ links = {
 
 @router.get('/main')
 async def get_main_page(request: Request,
-                        user=Depends(current_user),
+                        account=Depends(current_user),
                         db_session: AsyncSession = Depends(get_async_session)):
 
-    link_img = get_link_account_img(user)
+    link_img = get_link_account_img(account)
 
     videos = await get_last_videos(await_count_main, 0, db_session)
 
@@ -41,7 +41,7 @@ async def get_main_page(request: Request,
                                                          'links': links,
                                                          "videos": videos,
                                                          "link_user_img": link_img,
-                                                         "user": user,
+                                                         "account": account,
                                                          'await_count': await_count_main})
 
 
@@ -132,6 +132,7 @@ async def get_user_page(request: Request,
     return templates.TemplateResponse("account/user.html", {"request": request,
                                                             'links': links,
                                                             "user": user,
+                                                            "account": account,
                                                             "user_videos": user_videos,
                                                             "await_count": await_count,
                                                             'plv': links['part_link_video'],
@@ -210,6 +211,32 @@ async def get_upload_page(request: Request,
                                                              'links': links,
                                                              'account': account,
                                                              "link_img": link_img})
+
+
+@router.get("/auth/login")
+async def get_login_page(request: Request,
+                         account=Depends(current_user)):
+    if account is not None:
+        raise Exception('Вы уже авторизованы')
+    link_img = get_link_account_img(account)
+
+    return templates.TemplateResponse("auth/login.html", {"request": request,
+                                                          'links': links,
+                                                          'account': account,
+                                                          "link_img": link_img})
+
+
+@router.get("/auth/registration")
+async def get_reg_page(request: Request,
+                       account=Depends(current_user)):
+    if account is not None:
+        raise Exception('Вы уже авторизованы')
+    link_img = get_link_account_img(account)
+
+    return templates.TemplateResponse("auth/registration.html", {"request": request,
+                                                          'links': links,
+                                                          'account': account,
+                                                          "link_img": link_img})
 
 
 
