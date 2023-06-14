@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request, Body
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.dialects.postgresql import insert
@@ -19,6 +19,8 @@ from src.interactions.utils import check_view, check_sub, check_like
 from src.interactions.model import comment as comment_table
 from src.interactions.model import sub as sub_table
 from src.video.utils import check_video
+from src.interactions.schemas import Comment
+
 MAX_COUNT_GET_ROWS = 100
 
 router = APIRouter(
@@ -105,8 +107,8 @@ async def remove_like(id_video: str,
 
 
 @router.post("/protected-route/comment/add")
-async def add_comment(text: str,
-                      id_video: str,
+async def add_comment(id_video: str,
+                      request: Comment,
                       user: User = Depends(current_active_user),
                       db_session: AsyncSession = Depends(get_async_session)):
 
@@ -114,7 +116,7 @@ async def add_comment(text: str,
         raise HTTPException(status_code=500, detail="Видео ещё не просмотренно")
 
     # Првоерка и обработка содержимого комментария
-    text = text.strip()
+    text = request.text
     if text == '':
         raise HTTPException(status_code=500, detail="Что-то не так с тектом(Допилить проверку текста)")
     ######

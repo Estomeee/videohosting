@@ -179,17 +179,23 @@ async def get_video_page(id_video: str,
                                                                 "plu": links['part_link_user'],
                                                                 "is_liked": is_liked,
                                                                 "is_sub": is_sub,
-                                                                "something": account})
+                                                                "account": account})
 
 
 @router.get("/video_page/comments")
 async def get_video_page_fragment_comments(request: Request,
+                                           is_one: bool,
                                            offset: int,
                                            id_video: str,
+                                           account=Depends(current_user),
                                            db_session: AsyncSession = Depends(get_async_session)):
-
-    comments = await get_comments(await_count, offset, id_video, db_session)
+    # Проверка комментария
+    count = await_count
+    if is_one:
+        count = 1
+    comments = await get_comments(count, offset, id_video, db_session)
 
     return templates.TemplateResponse("video/fragment_comments.html", {"request": request,
                                                                        "comments": comments,
-                                                                       "plu": links['part_link_user']})
+                                                                       "plu": links['part_link_user'],
+                                                                       'account': account})

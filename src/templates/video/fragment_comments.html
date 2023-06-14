@@ -1,6 +1,13 @@
 {% for c in comments %}
-  <li class="main-comments-list_comm-item">
-      <a href="{{plu}}{{c.id_auther}}" class="comm_auther">{{c.id_auther}}</a>
-      <p class="comm_text">{{c.text}}</p>
+  <li class="flex main-comments-list_comm-item" style="justify-content: space-between;">
+      <div class="flex-column">
+          <a href="{{plu}}{{c.id_auther}}" class="comm_auther">{{c.id_auther}}</a>
+          <p class="comm_text">{{c.text}}</p>
+      </div>
+      {% if c.id_auther == account.id %}
+        <div>
+            <button class="bth bth-remove-video" onclick="remove_comment('{{c.id}}');">Удалить</button>
+        </div>
+      {% endif %}
   </li>
 {% endfor %}

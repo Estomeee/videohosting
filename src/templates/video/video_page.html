@@ -50,21 +50,28 @@
         </div>
         <div class="main-comments">
             <p class="main-comments-p">Комментарии</p>
-            {% if something != None %}
-            <form method="post" action="http://127.0.0.1:8000/interactions/protected-route/comment/add" class="flex-column">
-                <textarea class="comment-input" name="comment" cols="40" rows="5" ></textarea>
-                <button class="bth h-add_comm" onclick="">Отправить</button>
-            </form>
+            {% if account != None %}
+            <div class="flex-column">
+                <textarea id="text_comment" name="text" placeholder="Введите комментарий" class="comment-input" cols="40" rows="5" ></textarea>
+                <button class="bth bth-add_comm" onclick="add_comment();">Отправить</button>
+            </div>
             {% else %}
                 <p>Авторизуйтесь, чтобы оставить комментарий</p>
             {% endif %}
 
             <ul class="main-comments-list_comm">
                 {% for c in comments %}
-                <li class="main-comments-list_comm-item">
-                    <a href="{{plu}}{{c.id_auther}}" class="comm_auther">{{c.id_auther}}</a>
-                    <p class="comm_text">{{c.text}}</p>
-                </li>
+                  <li id="{{c.id}}" class="flex main-comments-list_comm-item" style="justify-content: space-between;">
+                      <div class="flex-column">
+                          <a href="{{plu}}{{c.id_auther}}" class="comm_auther">{{c.id_auther}}</a>
+                          <p class="comm_text">{{c.text}}</p>
+                      </div>
+                      {% if c.id_auther == account.id %}
+                        <div>
+                            <button class="bth bth-remove-video" onclick="remove_comment('{{c.id}}');">Удалить</button>
+                        </div>
+                      {% endif %}
+                  </li>
                 {% endfor %}
             </ul>
                 {% if comments|length > 0 %}

@@ -2,25 +2,18 @@ from datetime import datetime
 from uuid import uuid4
 
 from fastapi import APIRouter, Request, Depends, UploadFile, HTTPException, File, UploadFile
-from fastapi_users import FastAPIUsers
 
-from sqlalchemy import select, inspect, join, delete, values, insert, desc
+from sqlalchemy import select, delete, insert, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .model import User
 from src.video.model import video as video_table
-from src.video.schemas import Video as video_class
 
 from src.entrypoint_db import get_async_session
 from src.user.authorization.current_user import current_active_user, current_user
-from src.user.authorization.current_user import fastapi_users
-from src.user.authorization.router import get_user
 from src.interactions.model import like as like_table
 from src.interactions.model import view as view_table
 from src.interactions.utils import add_view
-from src.video.utils import check_video
-from typing import List
-
 
 from streaming_form_data.targets import ValueTarget, FileTarget, NullTarget
 from streaming_form_data import StreamingFormDataParser
@@ -28,7 +21,6 @@ from streaming_form_data.validators import MaxSizeValidator
 from starlette.concurrency import run_in_threadpool
 from src.video.streaming import VideoTarget
 from starlette.requests import ClientDisconnect
-import streaming_form_data
 from boto3_my.boto3_ import upload_object, remove_object
 from boto3_my.boto3_ import BUCKET
 
@@ -167,141 +159,6 @@ async def add_video_db(id_video: str,
 
     await db_session.execute(query_insert)
     await db_session.commit()
-
-
-
-'''
-@router.post("/protected-route/load")
-async def load_video(title: str,
-                     description: str,
-                     files: List[UploadFile] = File(...),
-                     user: User = Depends(current_active_user),
-                     db_session: AsyncSession = Depends(get_async_session)):
-
-    if len(files) == 0 or len(files) > 2:
-        raise HTTPException(status_code=500, detail="Не верное количесвто файлов")
-
-    key = str(uuid4())
-    key_video = f'video&{user.id}${title}${key}'
-    key_poster = f'image&{user.id}${title}${key}'
-
-    video_link = f'https://storage.yandexcloud.net/{BUCKET}/{key_video}'
-    poster_link = f'https://storage.yandexcloud.net/{BUCKET}/_DSC1067.JPG'
-
-    id_video = str(uuid4())
-
-
-    if len(files) == 2:
-        poster_link = f'https://storage.yandexcloud.net/{BUCKET}/{key_poster}'
-
-
-
-    query_insert = insert(video_table).values(id=id_video,
-                                              title=title,
-                                              description=description,
-                                              id_auther=user.id,
-                                              count_likes=0,
-                                              count_comments=0,
-                                              video_link=video_link,
-                                              poster_link=poster_link,
-                                              published_at=datetime.utcnow())
-
-
-    await db_session.execute(query_insert)
-    try:
-
-        multipart_upload = s3client.create_multipart_upload(
-            Bucket=BUCKET, Key=key)
-
-        part_number = 1
-        parts = []
-
-        try:
-            while data := files[0].file.read(PART_SIZE):
-                upload_part_response = s3client.upload_part(Body=data,
-                                                            Bucket=BUCKET,
-                                                            UploadId=multipart_upload['UploadId'],
-                                                            PartNumber=part_number,
-                                                            Key=key)
-
-                parts.append({
-                    'PartNumber': part_number,
-                    'ETag': upload_part_response['ETag']
-                })
-                print(parts[part_number - 1])
-                print(len(data))
-
-                part_number += 1
-
-        except Exception:
-            return {"message": "There was an error uploading the file(s)"}
-        finally:
-            pass
-
-        # Закрываем поток
-        completeResult = s3client.complete_multipart_upload(
-            Bucket=BUCKET,
-            Key=key,
-            MultipartUpload={'Parts': parts},
-            UploadId=multipart_upload['UploadId']
-        )
-
-    except Exception:
-
-        query = delete(video_table).where(video_table.c.id == id_video)
-        await db_session.execute(query)
-        print('Action: remove')
-        await db_session.commit()
-        return {'message': 'Не успешно'}
-
-    await db_session.commit()
-    return 'Видео успешно загружено'
-
-'''
-'''
-@router.post("/protected-route/load")
-async def load_video(request: Request,
-
-                     ):
-    key = '9999'
-
-    # Открыл поток для записи файла
-    multipart_upload = s3client.create_multipart_upload(
-        Bucket='urfube-emegor', Key=key)
-
-    bb = []
-    parts = []
-    part_number = 1
-    with open('99.mp4', 'rb') as f:
-        while True:
-            data = f.read(1024*1024*5)
-            if not len(data):
-                break
-            upload_part_response = s3client.upload_part(Body=data,
-                                                        Bucket="urfube-emegor",
-                                                        UploadId=multipart_upload['UploadId'],
-                                                        PartNumber=part_number,
-                                                        Key=key)
-
-            parts.append({
-                'PartNumber': part_number,
-                'ETag': upload_part_response['ETag']
-            })
-            print(parts[part_number-1])
-            print(len(data))
-            #print(chunk)
-
-            part_number += 1
-
-
-    # Закрываем поток
-    completeResult = s3client.complete_multipart_upload(
-        Bucket='urfube-emegor',
-        Key=key,
-        MultipartUpload={'Parts': parts},
-        UploadId=multipart_upload['UploadId']
-    )
-'''
 
 
 @router.get("/protected-route/delete_video")

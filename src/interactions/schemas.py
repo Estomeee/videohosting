@@ -11,3 +11,7 @@ class View(BaseModel):
     id_user: int
     published_at: datetime
 
+
+class Comment(BaseModel):
+    text: str
+
