@@ -8,6 +8,10 @@
         <script src="{{ url_for('static', path='js/account.js') }}"></script>
 {% endblock %}
 
+{% block bth_out%}
+    <div><button class="bth bth-out" onclick="logout();">Выйти из аккаунта</button></div>
+{% endblock %}
+
 {% block actions %}
     <div class="flex main-content-actions">
         <ul class="flex main-content-actions-list">

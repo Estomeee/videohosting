@@ -1,0 +1,13 @@
+{% for e in subs%}
+    <li id="{{e.id_maker}}" class="flex main-list_video-item">
+        <a href={{plu}}{{e.id_maker}} class="flex" style="align-items: center;">
+            <img src={{e.User.link_img}} alt="" class="main-list_video-item-img_maker">
+            <div class="flex-column main-list_video-item-info">
+                <div>
+                    <p class="main-list_video-item-info-title">{{e.User.nickname}}</p>
+                    <p class="main-list_video-item-info-auther">Подписчиков: {{e.User.count_subs}}</p>
+                </div>
+            </div>
+        </a>
+    </li>
+{% endfor %}

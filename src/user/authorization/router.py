@@ -41,7 +41,7 @@ async def get_user(id: int, db_session: AsyncSession = Depends(get_async_session
 def protected_route(user: User = Depends(current_active_user)):
     return f"Hello, {user.email}"
 
-@router.get("/protected-route/get_subscriptions")
+
 async def get_subscriptions(count: int,
                             offset: int,
                             user: User = Depends(current_active_user),

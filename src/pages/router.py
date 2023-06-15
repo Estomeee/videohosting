@@ -3,12 +3,13 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.entrypoint_db import get_async_session
-from src.user.authorization.router import get_user
+from src.user.authorization.router import get_user, get_subscriptions
 from src.video.router import get_last_videos, get_videos_this_user, get_viewed_videos, get_liked_videos_main, get_video
 from src.user.authorization.current_user import current_user, current_active_user
 from src.interactions.router import get_comments
 from src.pages.utils import get_link_account_img
 from src.interactions.utils import check_like, check_sub
+
 
 router = APIRouter(
     prefix='/page',
@@ -113,12 +114,26 @@ async def get_account_fragment_liked(request: Request,
                                                                 'plv': links['part_link_video']})
 
 
+@router.get("/account/subs_fragment")
+async def get_account_fragment_subs(request: Request,
+                                    offset: int,
+                                    user=Depends(current_active_user),
+                                    db_session: AsyncSession = Depends(get_async_session)):
+
+    subs = await get_subscriptions(await_count, offset, user, db_session)
+
+    return templates.TemplateResponse("account/subs_fragment.html", {"request": request,
+                                                                     "subs": subs,
+                                                                     "plu": links['part_link_user']})
+
+
 @router.get('/user')
 async def get_user_page(request: Request,
                         id_user: int,
                         account=Depends(current_user),
                         db_session: AsyncSession = Depends(get_async_session)):
 
+    is_sub = False
     if account is not None:
         if account.id == id_user:
             return await get_account_page(request, account, db_session)

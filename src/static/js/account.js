@@ -1,9 +1,12 @@
 
 let urls = ['http://127.0.0.1:8000/page/account/my_video',
             'http://127.0.0.1:8000/page/account/history',
-            'http://127.0.0.1:8000/page/account/liked_video']
+            'http://127.0.0.1:8000/page/account/liked_video',
+            'http://127.0.0.1:8000/page/account/subs_fragment']
 
 let url_remove_video = 'http://127.0.0.1:8000/video/protected-route/delete_video'
+let url_logout = 'http://127.0.0.1:8000/auth/logout'
+let url_main = 'http://127.0.0.1:8000/page/main'
 
 function remove_video(id_video){
 
@@ -89,9 +92,33 @@ function more(await_count, num){
             let a = document.querySelector('.main-list_video')
             a.innerHTML += xhr.response
             if (xhr.response.length <= 0){
-                alert('Видео больше нет')
+                alert('Вы дошли до конца списка')
             }
           // вызов функции
+        }
+      };
+
+      xhr.onerror = function() {
+        alert("Попробуйте позже");
+      };
+    }
+
+
+function logout(){
+
+    let xhr = new XMLHttpRequest();
+
+    let url = new URL(url_logout);
+
+    xhr.open("POST", url)
+    xhr.send()
+
+    xhr.onload = function() {
+        if (xhr.status != 204) {
+            alert(`Ошибка ${xhr.status}: ${xhr.statusText}`);
+        } else {
+            window.location.href = url_main;
+
         }
       };
 

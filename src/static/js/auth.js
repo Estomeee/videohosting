@@ -1,4 +1,5 @@
 url_upload = 'http://127.0.0.1:8000/auth/login'
+let url_main = 'http://127.0.0.1:8000/page/main'
 
 function serializeForm(formNode) {
     var data = new FormData(formNode);
@@ -36,7 +37,7 @@ function upload(data){
     xhr.onload = function() {
         if (xhr.status == 200 | xhr.status == 204) {
             alert('Успех, на!')
-            window.location.href = history.go(-1);
+            window.location.href = url_main;
 
         } else {
             alert(`Ошибка ${xhr.status}: ${xhr.statusText}`);

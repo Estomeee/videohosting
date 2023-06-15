@@ -117,3 +117,14 @@
     color: black;
 
 }
+
+.bth-sub{
+    background-color: red;
+}
+
+.main-list_video-item-img_maker{
+    width: 100px;
+    height: 100px;
+    border-radius: 100px;
+    margin-right: 50px;
+}
