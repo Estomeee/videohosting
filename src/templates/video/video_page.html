@@ -34,7 +34,8 @@
 
                 </div>
                 <div class="flex" style="align-items: center;">
-                    <p id="count_likes" style="margin-right: 20px;">Лайков: {{video.count_likes}}</p>
+                    <p style="margin-right: 5px;">Лайков: </p>
+                    <p id="count_likes" style="margin-right: 20px;">{{video.count_likes}}</p>
                     {% if is_liked %}
                     <button class="bth bth-like bth-remove_like" onclick="remove_like('{{video.id}}');">Убрать лайк</button>
                     {% else %}

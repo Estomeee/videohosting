@@ -1,6 +1,3 @@
-
-let urls = ['http://127.0.0.1:8000/page/my_video', 'http://127.0.0.1:8000/page/hstory', 'http://127.0.0.1:8000/page/liked_video' ]
-
 function get_more(){
 
     let xhr = new XMLHttpRequest();
@@ -8,7 +5,7 @@ function get_more(){
     let ul = document.querySelector('.main-list_video')
     let offset = ul.childElementCount
 
-    let url = new URL('http://127.0.0.1:8000/page/main/more');
+    let url = new URL(url_more);
     url.searchParams.set('offset', offset);
 
     xhr.open("GET", url)

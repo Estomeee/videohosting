@@ -1,8 +1,3 @@
-
-let urls = ['http://127.0.0.1:8000/page/user/videos']
-url_sub = 'http://127.0.0.1:8000/interactions/protected-route/subscribe'
-url_unsub = 'http://127.0.0.1:8000/interactions/protected-route/unsubscribe'
-
 function more(await_count, num){
     //Получаем кол-во отображённых видео - offset
     let ul = document.querySelector('.main-list_video')
@@ -12,7 +7,7 @@ function more(await_count, num){
 
     let xhr = new XMLHttpRequest();
 
-    let url = new URL(urls[num]);
+    let url = new URL(url_user_videos);
     url.searchParams.set('offset', offset);
     url.searchParams.set('id_user', id_user);
 

@@ -1,6 +1,3 @@
-url_upload = 'http://127.0.0.1:8000/auth/register'
-
-
 function handleFormSubmit(event) {
     console.log('dsfsd')
   event.preventDefault()
@@ -20,7 +17,7 @@ form.addEventListener('submit', handleFormSubmit)
 function registr(data){
 
     let xhr = new XMLHttpRequest();
-    let url = new URL(url_upload);
+    let url = new URL(url_reg);
 
 
     xhr.open("POST", url)

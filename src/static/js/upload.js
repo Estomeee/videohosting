@@ -1,5 +1,3 @@
-url_upload = 'http://127.0.0.1:8000/'
-
 function serializeForm(formNode) {
     var data = new FormData(formNode);
     for (var [key, value] of data) {

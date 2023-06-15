@@ -1,11 +1,8 @@
-url_upload = 'http://127.0.0.1:8000/auth/login'
-let url_main = 'http://127.0.0.1:8000/page/main'
-
 function serializeForm(formNode) {
     var data = new FormData(formNode);
     for (var [key, value] of data) {
     console.log(key, value)
-}
+    }
 
 }
 
@@ -25,7 +22,7 @@ form.addEventListener('submit', handleFormSubmit)
 function auth(data){
 
     let xhr = new XMLHttpRequest();
-    let url = new URL(url_upload);
+    let url = new URL(url_login);
     url.searchParams.set('title', 'Form');
     url.searchParams.set('description', 'Form');
 

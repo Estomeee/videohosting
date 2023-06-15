@@ -1,12 +1,3 @@
-
-let urls = ['http://127.0.0.1:8000/page/video_page/comments'] //fdgdfgdfg
-url_sub = 'http://127.0.0.1:8000/interactions/protected-route/subscribe'
-url_unsub = 'http://127.0.0.1:8000/interactions/protected-route/unsubscribe'
-url_put_like = "http://127.0.0.1:8000/interactions/protected-route/put_like"
-url_remove_like = "http://127.0.0.1:8000/interactions/protected-route/remove_like"
-url_add_com = 'http://127.0.0.1:8000/interactions/protected-route/comment/add'
-url_remove_com = 'http://127.0.0.1:8000/interactions/protected-route/comment/remove'
-
 function add_comment(){
 
     textarea = document.getElementById('text_comment');
@@ -154,7 +145,7 @@ function get_comment(){
 
     let xhr = new XMLHttpRequest();
 
-    let url = new URL(urls[0]);
+    let url = new URL(url_get_comment);
     url.searchParams.set('is_one', true);
     url.searchParams.set('offset', 0);
     url.searchParams.set('id_video', id_video);

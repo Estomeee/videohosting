@@ -1,13 +1,3 @@
-
-let urls = ['http://127.0.0.1:8000/page/account/my_video',
-            'http://127.0.0.1:8000/page/account/history',
-            'http://127.0.0.1:8000/page/account/liked_video',
-            'http://127.0.0.1:8000/page/account/subs_fragment']
-
-let url_remove_video = 'http://127.0.0.1:8000/video/protected-route/delete_video'
-let url_logout = 'http://127.0.0.1:8000/auth/logout'
-let url_main = 'http://127.0.0.1:8000/page/main'
-
 function remove_video(id_video){
 
     let xhr = new XMLHttpRequest();
@@ -36,7 +26,7 @@ function remove_video(id_video){
 function action(num, id){
 
     let xhr = new XMLHttpRequest();
-    let url = new URL(urls[num]);
+    let url = new URL(urls_actions[num]);
     url.searchParams.set('offset', 0);
     xhr.open("GET", url)
 
@@ -78,7 +68,7 @@ function more(await_count, num){
 
     let xhr = new XMLHttpRequest();
 
-    let url = new URL(urls[num]);
+    let url = new URL(urls_actions[num]);
     url.searchParams.set('offset', offset);
 
     xhr.open("GET", url)
