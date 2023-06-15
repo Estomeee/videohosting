@@ -25,7 +25,10 @@ links = {
     'main': host + "/page/main",
     'account': host + "/page/account",
     'part_link_video': host + "/page/video_page?id_video=",
-    'part_link_user': host + "/page/user?id_user="
+    'part_link_user': host + "/page/user?id_user=",
+    'upload': host + '/page/upload_page',
+    'login': host + '/page/auth/login',
+    'registr': host + '/page/auth/registration'
 }
 
 
