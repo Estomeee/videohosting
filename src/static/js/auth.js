@@ -16,13 +16,13 @@ function handleFormSubmit(event) {
   var fields = new FormData(form)
 
   data = serializeForm(form)
-  upload(fields)
+  auth(fields)
 }
 
 let form = document.getElementById('form')
 form.addEventListener('submit', handleFormSubmit)
 
-function upload(data){
+function auth(data){
 
     let xhr = new XMLHttpRequest();
     let url = new URL(url_upload);

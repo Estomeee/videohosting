@@ -93,3 +93,8 @@
 .bth-sub{
     background-color: red;
 }
+
+.comment_form{
+    align-items: flex-end;
+    margin-bottom: 20px;
+}

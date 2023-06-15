@@ -168,7 +168,8 @@ async def get_comments(count: int,
     if not await check_video(id_video, db_session):
         raise HTTPException(status_code=404, detail="Video not found")
 
-    query = select(comment_table)\
+
+    query = select(comment_table, User).join(User, User.id == comment_table.c.id_auther)\
         .where(comment_table.c.id_video == id_video)\
         .order_by(desc(comment_table.c.published_at))\
         .offset(offset).limit(count)

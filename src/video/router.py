@@ -138,7 +138,7 @@ async def load_video(request: Request,
         # Доделать загрузку видео
         await add_video_db(key, user.id, title,
                            description,
-                           video_link, image_link, 'Исправь загрузку(2)(7)',db_session)
+                           video_link, image_link, 'Можно убрать это поле))',db_session)
     except Exception:
         await video_file.uploader.remove_object()
         raise Exception
@@ -208,7 +208,8 @@ async def delete_video(id_video: str,
 async def get_video(id_video: str,
                     user=Depends(current_user),
                     db_session: AsyncSession = Depends(get_async_session)):
-    query = select(video_table).where(video_table.c.id == id_video)
+
+    query = select(video_table, User).join(User, User.id == video_table.c.id_auther).where(video_table.c.id == id_video)
 
     video = await db_session.execute(query)
     video = video.one_or_none()
@@ -227,7 +228,7 @@ async def get_last_videos(count: int, offset: int, db_session: AsyncSession = De
     if count > MAX_COUNT_GET_ROWS:
         raise HTTPException(status_code=500, detail="У вас большие запросы, попробуйте использовать меньшее значение")
 
-    query = select(video_table).where().order_by(desc(video_table.c.published_at)).offset(offset).limit(count)
+    query = select(video_table, User).join(User, User.id == video_table.c.id_auther).where().order_by(desc(video_table.c.published_at)).offset(offset).limit(count)
 
     videos = await db_session.execute(query)
     videos = [row._asdict() for row in videos]
@@ -242,7 +243,7 @@ async def get_videos_this_user(id_user: int, count: int, offset: int,
     if count > MAX_COUNT_GET_ROWS:
         raise HTTPException(status_code=500, detail="У вас большие запросы, попробуйте использовать меньшее значение")
 
-    query = select(video_table)\
+    query = select(video_table, User).join(User, User.id == video_table.c.id_auther)\
         .where(video_table.c.id_auther == id_user)\
         .order_by(desc(video_table.c.published_at))\
         .offset(offset)\
@@ -261,38 +262,21 @@ async def get_viewed_videos(count: int, offset: int,
         raise HTTPException(status_code=500,
                             detail="У вас большие запросы, попробуйте использовать меньшее значение")
 
-    query = select(video_table) \
-        .join(view_table) \
+    query = select(video_table, User).join(User, video_table.c.id_auther == User.id)\
+        .join(view_table, (video_table.c.id_auther == view_table.c.id_user) & (video_table.c.id == view_table.c.id_video))\
         .where(view_table.c.id_user == user.id) \
         .order_by(desc(view_table.c.published_at)) \
         .offset(offset) \
         .limit(count)
 
+
+
+    print(query)
+
     videos = [row._asdict() for row in await db_session.execute(query)]
-
+    print(len(videos))
     return videos
 
-
-@router.get("/protected-route/get_liked_videos")
-async def get_liked_videos(count: int, offset: int,
-                           user: User = Depends(current_active_user),
-                           db_session: AsyncSession = Depends(get_async_session)):
-
-    if count > MAX_COUNT_GET_ROWS:
-        raise HTTPException(status_code=500,
-                            detail="У вас большие запросы, попробуйте использовать меньшее значение")
-
-    query = select(like_table) \
-        .where(like_table.c.id_auther == user.id) \
-        .order_by(desc(like_table.c.published_at)) \
-        .offset(offset) \
-        .limit(count)
-
-    likes = [row._asdict() for row in await db_session.execute(query)]
-
-    videos = [await get_video(i['id_video'], db_session) for i in likes]
-
-    return videos
 
 @router.get("/protected-route/get_liked_videos_main")
 async def get_liked_videos_main(count: int, offset: int,
@@ -303,8 +287,11 @@ async def get_liked_videos_main(count: int, offset: int,
         raise HTTPException(status_code=500,
                             detail="У вас большие запросы, попробуйте использовать меньшее значение")
 
-    query = select(video_table) \
-        .join(like_table) \
+
+
+    query = select(video_table, User) \
+        .join(User, video_table.c.id_auther == User.id) \
+        .join(like_table, (video_table.c.id_auther == like_table.c.id_auther) & (video_table.c.id == like_table.c.id_video)) \
         .where(like_table.c.id_auther == user.id) \
         .order_by(desc(like_table.c.published_at)) \
         .offset(offset) \
