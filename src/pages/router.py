@@ -20,12 +20,12 @@ templates = Jinja2Templates(directory="src/templates")
 
 await_count = 5
 await_count_main = 12
-
+host = "https://urfube-emegor.onrender.com"
 links = {
-    'main': "http://127.0.0.1:8000/page/main",
-    'account': "http://127.0.0.1:8000/page/account",
-    'part_link_video': "http://127.0.0.1:8000/page/video_page?id_video=",
-    'part_link_user': "http://127.0.0.1:8000/page/user?id_user="
+    'main': host + "/page/main",
+    'account': host + "/page/account",
+    'part_link_video': host + "/page/video_page?id_video=",
+    'part_link_user': host + "/page/user?id_user="
 }
 
 
