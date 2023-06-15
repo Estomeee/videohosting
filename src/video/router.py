@@ -6,7 +6,7 @@ from fastapi import APIRouter, Request, Depends, UploadFile, HTTPException, File
 from sqlalchemy import select, delete, insert, desc
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .model import User
+from src.user.authorization.model import User
 from src.video.model import video as video_table
 
 from src.entrypoint_db import get_async_session
@@ -23,12 +23,14 @@ from src.video.streaming import VideoTarget
 from starlette.requests import ClientDisconnect
 from boto3_my.boto3_ import upload_object, remove_object
 from boto3_my.boto3_ import BUCKET
+from src.video.streaming import MaxBodySizeValidator, MaxBodySizeException
 
 
 MAX_COUNT_GET_ROWS = 100
 MAX_FILE_SIZE = 1024 * 1024 * 1024 * 4  # = 4GB
 MAX_REQUEST_BODY_SIZE = MAX_FILE_SIZE + 1024
 MIN_SIZE_CHUNK = 1024 * 1024 * 6
+MAX_VIDEO_SIZE = 1024 * 1024 * 512
 PREFIX_VIDEO = 'video$'
 PREFIX_IMAGE = 'image$'
 
@@ -38,24 +40,6 @@ router = APIRouter(
     tags=['Video']
 )
 
-
-class MaxBodySizeException(Exception):
-    def __init__(self, body_len: str):
-        self.body_len = body_len
-
-
-class MaxBodySizeValidator:
-    def __init__(self, max_size: int):
-        self.body_len = 0
-        self.max_size = max_size
-
-    def __call__(self, chunk: bytes):
-        self.body_len += len(chunk)
-        if self.body_len > self.max_size:
-            raise MaxBodySizeException(body_len=str(self.body_len))
-
-
-max_video_size = 1024*1024*512
 
 @router.post("/protected-route/load")
 async def load_video(request: Request,
@@ -75,7 +59,7 @@ async def load_video(request: Request,
     image_link = default_image_link
     video_link = ''
 
-    video_file = VideoTarget(MaxSizeValidator(max_video_size), bucket=BUCKET, pre_key=key_video)
+    video_file = VideoTarget(MaxSizeValidator(MAX_VIDEO_SIZE), bucket=BUCKET, pre_key=key_video)
     image_file = ValueTarget()
     title_value = ValueTarget()
     descr_value = ValueTarget()
@@ -135,7 +119,6 @@ async def load_video(request: Request,
         raise HTTPException(status_code=512, detail=Exception)
 
     try:
-        # Доделать загрузку видео
         await add_video_db(key, user.id, title,
                            description,
                            video_link, image_link, 'Можно убрать это поле))',db_session)
@@ -228,7 +211,10 @@ async def get_last_videos(count: int, offset: int, db_session: AsyncSession = De
     if count > MAX_COUNT_GET_ROWS:
         raise HTTPException(status_code=500, detail="У вас большие запросы, попробуйте использовать меньшее значение")
 
-    query = select(video_table, User).join(User, User.id == video_table.c.id_auther).where().order_by(desc(video_table.c.published_at)).offset(offset).limit(count)
+    query = select(video_table, User)\
+        .join(User, User.id == video_table.c.id_auther).where().order_by(desc(video_table.c.published_at))\
+        .offset(offset)\
+        .limit(count)
 
     videos = await db_session.execute(query)
     videos = [row._asdict() for row in videos]
@@ -263,13 +249,12 @@ async def get_viewed_videos(count: int, offset: int,
                             detail="У вас большие запросы, попробуйте использовать меньшее значение")
 
     query = select(video_table, User).join(User, video_table.c.id_auther == User.id)\
-        .join(view_table, (video_table.c.id_auther == view_table.c.id_user) & (video_table.c.id == view_table.c.id_video))\
+        .join(view_table,
+              (video_table.c.id_auther == view_table.c.id_user) & (video_table.c.id == view_table.c.id_video))\
         .where(view_table.c.id_user == user.id) \
         .order_by(desc(view_table.c.published_at)) \
         .offset(offset) \
         .limit(count)
-
-
 
     print(query)
 
@@ -280,23 +265,21 @@ async def get_viewed_videos(count: int, offset: int,
 
 @router.get("/protected-route/get_liked_videos_main")
 async def get_liked_videos_main(count: int, offset: int,
-                           user: User = Depends(current_active_user),
-                           db_session: AsyncSession = Depends(get_async_session)):
+                                user: User = Depends(current_active_user),
+                                db_session: AsyncSession = Depends(get_async_session)):
 
     if count > MAX_COUNT_GET_ROWS:
         raise HTTPException(status_code=500,
                             detail="У вас большие запросы, попробуйте использовать меньшее значение")
 
-
-
     query = select(video_table, User) \
         .join(User, video_table.c.id_auther == User.id) \
-        .join(like_table, (video_table.c.id_auther == like_table.c.id_auther) & (video_table.c.id == like_table.c.id_video)) \
+        .join(like_table,
+              (video_table.c.id_auther == like_table.c.id_auther) & (video_table.c.id == like_table.c.id_video)) \
         .where(like_table.c.id_auther == user.id) \
         .order_by(desc(like_table.c.published_at)) \
         .offset(offset) \
         .limit(count)
-
 
     videos = [row._asdict() for row in await db_session.execute(query)]
 

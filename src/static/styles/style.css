@@ -77,3 +77,14 @@ footer{
     color: white;
     background-color: black;
 }
+
+.img-div{
+     overflow: hidden;
+}
+.main-list_video-item img{
+     transition: 0.3s;
+}
+
+.main-list_video-item a:hover img{
+     transform: scale(1.2);
+}

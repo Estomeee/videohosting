@@ -2,8 +2,7 @@ function serializeForm(formNode) {
     var data = new FormData(formNode);
     for (var [key, value] of data) {
     console.log(key, value)
-}
-
+    }
 }
 
 
@@ -30,12 +29,17 @@ function upload(data){
 
 
     xhr.send(data)
+    let div = document.createElement('div');
+    div.innerHTML = 'Загрузка...'
+    div.className = "upload"
+    document.body.append(div);
 
     xhr.onload = function() {
         if (xhr.status != 200) {
             alert(`Ошибка ${xhr.status}: ${xhr.statusText}`);
         } else {
-            alert('Успех, на!')
+            div.remove();
+            alert('Видео успешно загружено!')
         }
       };
 

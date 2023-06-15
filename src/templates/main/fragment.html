@@ -1,7 +1,7 @@
 {% for e in videos%}
             <li class="main-list_video-item">
                 <a href={{plv}}{{e.id}} id="e.id" >
-                    <img src={{e.poster_link}} alt="" class="main-list_video-item-preview">
+                   <div class="img-div"><img src={{e.poster_link}} alt="" class="main-list_video-item-preview"></div>
                 <div class="main-list_video-item-info">
                     <p class="main-list_video-item-info-title">{{e.title}}</p>
                     <p class="main-list_video-item-info-descr">{{e.User.nickname}}</p>

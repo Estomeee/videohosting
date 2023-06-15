@@ -1,14 +1,4 @@
-function serializeForm(formNode) {
-    var data = new FormData(formNode);
-    for (var [key, value] of data) {
-    console.log(key, value)
-    }
-
-}
-
-
 function handleFormSubmit(event) {
-    console.log('dsfsd')
   event.preventDefault()
   var fields = new FormData(form)
 
@@ -33,7 +23,7 @@ function auth(data){
 
     xhr.onload = function() {
         if (xhr.status == 200 | xhr.status == 204) {
-            alert('Успех, на!')
+            alert('Авторизация прошла успешно')
             window.location.href = url_main;
 
         } else {

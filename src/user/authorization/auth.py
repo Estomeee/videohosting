@@ -1,16 +1,12 @@
-from typing import AsyncGenerator
-
 from fastapi_users.authentication import AuthenticationBackend, CookieTransport, JWTStrategy
-
 from fastapi import Depends
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
-from sqlalchemy.orm import sessionmaker
-from .model import User
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.user.authorization.model import User
 from src.entrypoint_db import get_async_session
 from config import SECRET as secret
-from src.entrypoint_db import async_session_maker
+
 
 cookie_transport = CookieTransport(cookie_max_age=3600)
 

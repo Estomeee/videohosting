@@ -19,7 +19,7 @@ router = APIRouter(
 templates = Jinja2Templates(directory="src/templates")
 
 await_count = 5
-await_count_main = 6
+await_count_main = 12
 
 links = {
     'main': "http://127.0.0.1:8000/page/main",
@@ -249,20 +249,6 @@ async def get_reg_page(request: Request,
     link_img = get_link_account_img(account)
 
     return templates.TemplateResponse("auth/registration.html", {"request": request,
-                                                          'links': links,
-                                                          'account': account,
-                                                          "link_img": link_img})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                                                                 'links': links,
+                                                                 'account': account,
+                                                                 "link_img": link_img})

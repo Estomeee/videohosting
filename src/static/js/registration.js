@@ -1,13 +1,10 @@
 function handleFormSubmit(event) {
-    console.log('dsfsd')
   event.preventDefault()
   var fields = new FormData(form)
   fields.append("name", "string")
   fields.append("is_active", "true")
   fields.append("is_superuser", "false")
   fields.append("is_verified", "false")
-
-
   registr(fields)
 }
 
@@ -29,7 +26,7 @@ function registr(data){
 
     xhr.onload = function() {
         if (xhr.status == 200 | xhr.status == 201) {
-            alert('Добро пожаловать, кто-то!')
+            alert('Регистриация прошла успешно')
             history.go(-1)
 
         } else {

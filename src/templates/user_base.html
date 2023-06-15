@@ -41,7 +41,7 @@
                     {% for e in user_videos%}
                     <li id="{{e.id}}" class="flex main-list_video-item">
                         <a href={{plv}}{{e.id}} class="flex">
-                            <img src={{e.poster_link}} alt="" class="main-list_video-item-preview">
+                            <div class="img-div"><img src={{e.poster_link}} alt="" class="main-list_video-item-preview"></div>
                         <div class="flex-column main-list_video-item-info">
                             <div>
                                 <p class="main-list_video-item-info-title">{{e.title}}</p>

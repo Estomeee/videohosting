@@ -1,11 +1,6 @@
-from datetime import datetime
-
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, DateTime, func, BigInteger
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey, DateTime, func
 
 from src.user.authorization.model import User
-from src.video.model import video
-
 from src.video.model import metadata as md
 
 metadata = MetaData()

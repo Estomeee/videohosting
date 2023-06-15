@@ -1,15 +1,14 @@
 from datetime import datetime
 
-from src.entrypoint_db import get_async_session
-from src.user.authorization.model import User, AsyncSession
 from fastapi import Depends, HTTPException
-from src.user.authorization.current_user import current_active_user
-
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy import update
-from sqlalchemy import select
+from sqlalchemy import update, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from src.entrypoint_db import get_async_session
+from src.user.authorization.model import User
+from src.user.authorization.current_user import current_active_user
 from src.interactions.model import view as view_table
-from src.interactions.schemas import View
 from src.video.model import video as video_table
 from src.interactions.model import like as like_table
 from src.interactions.model import sub as sub_table

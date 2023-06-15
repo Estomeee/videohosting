@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 import aioboto3
-from config import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 from boto3_my.boto3_ import config as boto3_config
 
+MIN_SIZE_CHUNK = 1024*1024*6
 
 class Uploader:
     def __init__(self, bucket: str, key: str = None):
@@ -37,7 +37,7 @@ class Uploader:
 
         self.chunks_size += len(chunk)
         self.chunks.append(chunk)
-        if self.chunks_size < 1024*1024*6 and not force:
+        if self.chunks_size < MIN_SIZE_CHUNK and not force:
             return
 
         chunk = b''.join(self.chunks)
@@ -73,7 +73,6 @@ class Uploader:
 
         if self.chunks_size > 0:
             await self.upload_chunk(b'', True)
-
 
         async with aioboto3.Session().client(**self.config) as s3client:
             multipart_upload = self.mpu
