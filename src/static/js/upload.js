@@ -1,17 +1,7 @@
-function serializeForm(formNode) {
-    var data = new FormData(formNode);
-    for (var [key, value] of data) {
-    console.log(key, value)
-    }
-}
-
-
 function handleFormSubmit(event) {
     console.log('dsfsd')
   event.preventDefault()
   var fields = new FormData(form)
-
-  data = serializeForm(form)
   upload(fields)
 }
 

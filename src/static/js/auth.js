@@ -2,7 +2,6 @@ function handleFormSubmit(event) {
   event.preventDefault()
   var fields = new FormData(form)
 
-  data = serializeForm(form)
   auth(fields)
 }
 
