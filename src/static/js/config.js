@@ -1,5 +1,5 @@
 
-host = 'http://127.0.0.1:8000'
+host = 'https://urfube-emegor.onrender.com'
 
 
 const  urls_actions = [host + '/page/account/my_video',
