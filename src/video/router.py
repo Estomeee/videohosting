@@ -248,10 +248,11 @@ async def get_viewed_videos(count: int, offset: int,
         raise HTTPException(status_code=500,
                             detail="У вас большие запросы, попробуйте использовать меньшее значение")
 
-    query = select(video_table, User)\
-        .join(view_table,
-              (video_table.c.id_auther == view_table.c.id_user) & (video_table.c.id == view_table.c.id_video)) \
+
+    query = select(video_table, User) \
         .join(User, video_table.c.id_auther == User.id) \
+        .join(view_table,
+              (user.id == view_table.c.id_user) & (video_table.c.id == view_table.c.id_video)) \
         .where(view_table.c.id_user == user.id) \
         .order_by(desc(view_table.c.published_at)) \
         .offset(offset) \
@@ -274,10 +275,10 @@ async def get_liked_videos_main(count: int, offset: int,
                             detail="У вас большие запросы, попробуйте использовать меньшее значение")
 
     query = select(video_table, User) \
-        .join(like_table,
-              (video_table.c.id_auther == like_table.c.id_auther) & (video_table.c.id == like_table.c.id_video)) \
-        .where(like_table.c.id_auther == user.id) \
         .join(User, video_table.c.id_auther == User.id) \
+        .join(like_table,
+              (user.id == like_table.c.id_auther) & (video_table.c.id == like_table.c.id_video)) \
+        .where(like_table.c.id_auther == user.id) \
         .order_by(desc(like_table.c.published_at)) \
         .offset(offset) \
         .limit(count)
